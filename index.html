@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lupe de Lupe Quiz</title>
+    <style>
+        body { background-color: #121212; color: #00ff00; font-family: monospace; padding: 20px; display: flex; flex-direction: column; height: 90vh; }
+        #output { flex-grow: 1; overflow-y: auto; white-space: pre-wrap; margin-bottom: 10px; border: 1px solid #333; padding: 10px; font-size: 14px; }
+        #input-area { display: flex; gap: 10px; }
+        input { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 10px; flex-grow: 1; outline: none; font-family: monospace; }
+        button { background: #00ff00; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>Lupe de Lupe: Quantas músicas você sabe?</h2>
+    <div id="output"></div>
+    
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Digite o nome da música (ou 's' para terminar e ver quais faltaram)" autocomplete="off">
+        <button onclick="processarChute()">Enviar</button>
+    </div>
+
+    <script>
+        let over = false;
+        let musicasOriginais = new Set();
+        let albuns = {};
+        let correct = new Set();
+
+        const outputDiv = document.getElementById("output");
+        const inputBox = document.getElementById("user-input");
+
+        function removerAcentos(texto) {
+            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+        }
+
+        fetch('lupe.txt')
+            .then(response => response.text())
+            .then(data => {
+                const linhas = data.split('\n');
+                linhas.forEach(linha => {
+                    if (linha.includes(',')) {
+                        let [nome, album] = linha.split(',  ').map(s => s.trim());
+                        musicasOriginais.add(nome);
+                        if (!albuns[album]) albuns[album] = [];
+                        albuns[album].push(nome);
+                    }
+                });
+                atualizarTela();
+            })
+            .catch(err => outputDiv.innerText = "Erro ao carregar lupe.txt: " + err);
+
+        function atualizarTela(msg = "") {
+            let status = `Músicas: ${correct.size}/${musicasOriginais.size}\n`;
+            let corpo = "";
+
+            for (let album in albuns) {
+                let acertosNoAlbum = albuns[album].filter(m => correct.has(m));
+                if (acertosNoAlbum.length > 0) {
+                    corpo += `\n${album} (${acertosNoAlbum.length}/${albuns[album].length})\n`;
+                    acertosNoAlbum.forEach(m => corpo += `  - ${m} ✓\n`);
+                }
+            }
+
+            outputDiv.innerText = status + corpo + `\n${msg}`;
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        }
+
+        function processarChute() {
+            const guess = inputBox.value;
+            if (!guess || over) return;
+            inputBox.value = "";
+
+            if (guess.toLowerCase() === 's') {
+                let faltam = [...musicasOriginais].filter(m => !correct.has(m)).sort();
+                atualizarTela("Fim de jogo! Faltaram:\n" + faltam.map(m => "- " + m).join('\n'));
+                over = true;
+                return;
+            }
+
+            const guessClean = removerAcentos(guess);
+            
+            let encontrou = null;
+            for (let m of musicasOriginais) {
+                if (removerAcentos(m) === guessClean) {
+                    encontrou = m;
+                    break;
+                }
+            }
+
+            if (encontrou) {
+                if (!correct.has(encontrou)) {
+                    correct.add(encontrou);
+                    atualizarTela(`ACERTOU: ${encontrou}!`);
+                } else {
+                    atualizarTela(`'${encontrou}' já foi!`);
+                }
+            } else {
+                atualizarTela("Essa música não está na lista");
+            }
+        }
+
+        inputBox.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") processarChute();
+        });
+    </script>
+</body>
+</html>
