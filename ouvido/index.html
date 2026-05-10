@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      <title></title>
+      <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+      <main class="main">
+        <div class="header-div">
+          <header>Lupe de Lupe</header>
+        </div>
+        <div id="guesses-div" class="guesses-div">
+          <div class="guesses">
+            <div class="guess-div">
+              <div class="guess">
+                <div class="guess-text"></div>
+              </div>
+              <div class="guess">
+                <div class="guess-text"></div>
+              </div>
+              <div class="guess">
+                <div class="guess-text"></div>
+              </div>
+              <div class="guess">
+                <div class="guess-text"></div>
+              </div>
+              <div class="guess">
+                <div class="guess-text"></div>
+              </div>
+              <div class="guess">
+                <div class="guess-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="controls-container" style="display: none;">
+          <div id="container">
+            <div class="song-container">
+              <div class="song">
+                <div id="time">
+                  0:00
+                </div>
+              <div class="play-btn-div">
+                <button id="play-btn" class="play-btn" onclick="play()" disabled>
+                  <div id="play-btn-simbol" class="play-btn-svg-div">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffffff" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+              <div>
+                0:06
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="container">
+          <div class="user-input">
+            <div>
+              <div class="text-input-div">
+                <svg class="lupa" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input id="text-input" class="text-input" placeholder="Sabe qual é a música? Pesquise pelo nome"></input>
+                <ul id="auto-complete" hidden></ul>
+                <div id="x" class="x">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-darkreader-inline-stroke="">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="btns">
+                <button id="skip-btn" class="btn" disabled onclick="skip()">
+                  Pular 
+                  <span style="text-transform: lowercase;">(+1s)</span>
+                </button> 
+                <button id="guess-btn" class="btn" style="background-color: #406074" onclick="doGuess()" disabled=true>Chutar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
